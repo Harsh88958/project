@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load cart %}
+{% block title %}Home{% endblock title %}
+{% block slider %}{% endblock slider %}
+{% block content %}
+<div class="container">
+    <div class="row border border-0">
+        {% for cat_var in cats %}
+        <div class="col mt-3">
+            <a href="?category_id={{cat_var.id}}">
+                <img src="{{cat_var.cat_image.url}}" class="img-thumbnail" style="border:0px;" alt="...">
+                {{cat_var.cat_name}}</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% comment %} All products {% endcomment %}
+<div class="container">
+    <div class="row">
+        {% for pro_var in products %}
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <img src="{{pro_var.product_image.url}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{pro_var.product_name}}</h5>
+                    <h5 class="card-title">₹{{pro_var.product_price}}</h5>
+                    <p class="card-text">{{pro_var.product_description}}</p>
+                </div>
+                 <div class="card-footer text-body-secondary">
+                    {% if pro_var|is_exist_in_cart:request.session.cart %}
+                    <div class="row">
+                        <div class="col-3">
+                        <form action="#{{pro_var.id}}" method="post">
+                            {% csrf_token %}
+                            <input type="text" name="minus" hidden value={{pro_var.id}}>
+                            <input type="text" name="cartid" hidden value={{pro_var.id}}>
+                            <button type="submit" class="btn btn-primary">-</button>
+                        </form>
+                        </div>
+                        <div class="col-6 text-center">
+                            {{pro_var|cart_quantity:request.session.cart}}
+                        </div>
+                        <div class="col-3">
+                        <form action="#{{pro_var.id}}" method="post">
+                            {% csrf_token %}
+                            <input type="text" name="cartid" hidden value={{pro_var.id}} >
+                            <button type="submit" class="btn btn-primary">+</button>
+                        </form>
+                            </div>
+                        </div>
+                    {% else %}
+                    <form action="#{{pro_var.id}}" method="post" class="text-center">
+                        {% csrf_token %}
+                        <input type="text" name="cartid" value={{pro_var.id}} hidden >
+                        <button type="submit" class="btn btn-primary">Add To Cart</button>
+                    </form>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

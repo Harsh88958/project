@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load cart %}
+{% block content %}
+    <div class="container-fluid my-3">
+        <table class="table table-success table-striped">
+            <tr class="text-center">
+                <th>Sno.</th>
+                <th>Product Name</th>
+                <th>Product Image</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+            </tr>
+            <div class="container-fluid">
+            {% for cd in order_details %}
+                <tr class="text-center">
+                    <td>{{forloop.counter}}</td>
+                    <td>{{cd.product_name}}</td>
+                    <td><img src="{{cd.product_image.url}}" alt="" width=50 height=50></td>
+                    <td>{{cd.product_price}}</td>
+                    <td>{{cd.quantity}}</td>
+                    <td>Rs.{{cd.price|ord_details:cd.quantity}}</td>
+                </tr>
+            {% endfor %}
+            </div>
+  
+            <tr class="text-center">
+                <td colspan=4><h2>Payable Amount:</h2></td>
+                <td>Rs.{{tp}}</td>
+                <td>
+                    <button  type="button" class="btn btn-primary">Checkout</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+{% endblock content %}

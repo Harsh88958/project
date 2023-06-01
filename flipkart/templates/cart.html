@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load cart %}
+{% block content %}
+    <div class="container-fluid my-3">
+        <table class="table table-success table-striped">
+            <tr class="text-center">
+                <th>Sno.</th>
+                <th>Product Name</th>
+                <th>Product Image</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+            </tr>
+            <div class="container-fluid">
+            {% for cd in cart_details %}
+                <tr class="text-center">
+                    <td>{{forloop.counter}}</td>
+                    <td>{{cd.product_name}}</td>
+                    <td><img src="{{cd.product_image.url}}" alt="" width=50 height=50></td>
+                    <td>{{cd.product_price}}</td>
+                    <td>{{cd|cart_quantity:request.session.cart}}</td>
+                    <td>Rs.{{cd|total_price:request.session.cart}}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+            </div>
+  
+            <tr class="text-center">
+                <td colspan=4><h2>Payable Amount:</h2></td>
+                <td>Rs.{{cart_details|payable_amount:request.session.cart}}</td>
+                <td>
+                    <button  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#checkout">Checkout</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- Modal -->
+<div class="modal fade" id="checkout" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Checkout</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+  <form action="{% url 'checkout' %}" method="POST">
+    {% csrf_token %}
+    <label for="address">Address:</label>
+    <input type="text" id="address" name="address" required>
+    
+    <label for="mobile">Mobile Number:</label>
+    <input type="tel" id="mobile" name="mobile" pattern="[0-9]{10}" required>
+    
+    <input type="submit" value="Submit">
+  </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
